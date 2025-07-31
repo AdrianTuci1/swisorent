@@ -1,0 +1,306 @@
+.timelineContainer {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid #e1e5e9;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.timelineHeader {
+  margin-bottom: 1.5rem;
+}
+
+.timelineTitle {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.timelineControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dateFilter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dateFilterLabel {
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.dateFilterInput {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.dateFilterInput:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.addBtn {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.addBtn:hover {
+  background-color: #1565c0;
+}
+
+.timelineView {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+.timelineTableContainer {
+  width: 100%;
+  overflow: auto;
+  position: relative;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  max-height: 600px;
+  box-sizing: border-box;
+  touch-action: none;
+}
+
+.timelineTableContainer:active {
+  cursor: grabbing;
+}
+
+.timelineTableContainer.dragging {
+  cursor: grabbing !important;
+}
+
+.timelineTableContainer.scrollable {
+  cursor: grab;
+}
+
+.timelineTableContainer.scrollable:hover {
+  cursor: grab;
+}
+
+.timelineTable {
+  transition: none;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  height: 90vh;
+}
+
+.timelineTableHeader {
+  display: flex;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e1e5e9;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.headerCell {
+  min-width: 100px;
+  width: 100px;
+  flex-shrink: 0;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: #495057;
+  border-right: 1px solid #e1e5e9;
+  font-size: 0.85rem;
+}
+
+.headerCellFirst {
+  min-width: 140px;
+  width: 140px;
+  flex-shrink: 0;
+  text-align: left;
+  padding-left: 1rem;
+  position: sticky;
+  left: 0;
+  z-index: 30;
+  background-color: #f8f9fa;
+  border-right: 2px solid #e1e5e9;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+.stickyCell {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background-color: #f8f9fa;
+  border-right: 2px solid #e1e5e9;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+.dateCell {
+  font-size: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e1e5e9;
+}
+
+.timelineTableBody {
+  max-height: 500px;
+}
+
+.timelineRow {
+  display: flex;
+  border-bottom: 1px solid #e1e5e9;
+  min-height: 80px;
+  white-space: nowrap;
+}
+
+.timelineRow:hover {
+  background-color: #f8f9fa;
+}
+
+.carInfo {
+  min-width: 140px;
+  width: 140px;
+  flex-shrink: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid #e1e5e9;
+  background-color: #f8f9fa;
+  position: sticky;
+  left: 0;
+  z-index: 25;
+  border-right: 2px solid #e1e5e9;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+.timelineRow:hover .carInfo {
+  background-color: #f8f9fa;
+}
+
+.carInfoStrong {
+  color: #333;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.carInfoSmall {
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.timelineCell {
+  min-width: 100px;
+  width: 100px;
+  flex-shrink: 0;
+  padding: 0.5rem;
+  border-right: 1px solid #e1e5e9;
+  cursor: pointer;
+  position: relative;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.timelineCell:hover {
+  background-color: #e3f2fd;
+}
+
+.reservationItem {
+  padding: 0.5rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  word-break: break-word;
+}
+
+.reservationItem:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+  .timelineControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .dateFilter {
+    justify-content: center;
+  }
+  
+  .timelineContainer {
+    padding: 1rem;
+  }
+  
+  .headerCell {
+    min-width: 80px;
+    width: 80px;
+    flex-shrink: 0;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+  }
+  
+  .headerCellFirst {
+    min-width: 120px;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  
+  .timelineCell {
+    min-width: 80px;
+    width: 80px;
+    flex-shrink: 0;
+    padding: 0.25rem;
+  }
+  
+  .carInfo {
+    min-width: 120px;
+    width: 120px;
+    flex-shrink: 0;
+    padding: 0.75rem;
+  }
+} 
