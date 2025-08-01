@@ -33,7 +33,7 @@ It can be used with Eleven Labs conversational agents.
 
 ## Eleven Labs Tool Configuration
 
-NU FOLOSI
+
 <!-- ### Tool 1: Check Car Reservations
 
 **Name**: `check_car_reservations`  
