@@ -33,7 +33,8 @@ It can be used with Eleven Labs conversational agents.
 
 ## Eleven Labs Tool Configuration
 
-### Tool 1: Check Car Reservations
+NU FOLOSI
+<!-- ### Tool 1: Check Car Reservations
 
 **Name**: `check_car_reservations`  
 **Description**: Get all reservations for a specific car by its ID.  
@@ -41,8 +42,10 @@ It can be used with Eleven Labs conversational agents.
 **URL**: `/api/reservations/car/{carId}`  
 **Path Parameters**:
 - `carId` - ID of the car to check reservations for
-**Query Parameters**: None
+**Query Parameters**: None -->
 
+
+PENTRU VERIFICARE
 ### Tool 2: Get Available Cars from Reservations
 
 **Name**: `get_available_cars_from_reservations`  
@@ -54,6 +57,8 @@ It can be used with Eleven Labs conversational agents.
 - `startDate` - Start date for the rental period (YYYY-MM-DD format)
 - `endDate` - End date for the rental period (YYYY-MM-DD format)
 
+
+PENTRU A CREEA REZERVARE
 ### Tool 3: Create Reservation
 
 **Name**: `create_reservation`  
