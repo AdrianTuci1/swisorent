@@ -37,10 +37,7 @@
           <input type="date" id="endDateRes" v-model="formData.endDate" required :class="styles.formInput">
         </div>
         
-        <div :class="styles.formGroup">
-          <label for="price" :class="styles.formLabel">Preț (RON):</label>
-          <input type="number" id="price" v-model="formData.price" required min="0" :class="styles.formInput">
-        </div>
+
         
         <div :class="styles.modalActions">
           <button type="button" @click="closeModal" :class="styles.cancelBtn">Anulează</button>
@@ -74,8 +71,7 @@ export default {
         customerName: '',
         phone: '',
         startDate: '',
-        endDate: '',
-        price: 0
+        endDate: ''
       }
     }
   },
@@ -86,6 +82,37 @@ export default {
     },
     
     submitForm() {
+      // Validate form data
+      if (!this.formData.carRegistration) {
+        alert('Te rog selectează o mașină');
+        return;
+      }
+      
+      if (!this.formData.customerName.trim()) {
+        alert('Te rog introdu numele clientului');
+        return;
+      }
+      
+      if (!this.formData.phone.trim()) {
+        alert('Te rog introdu numărul de telefon');
+        return;
+      }
+      
+      if (!this.formData.startDate) {
+        alert('Te rog selectează data de început');
+        return;
+      }
+      
+      if (!this.formData.endDate) {
+        alert('Te rog selectează data de sfârșit');
+        return;
+      }
+      
+      if (new Date(this.formData.startDate) >= new Date(this.formData.endDate)) {
+        alert('Data de sfârșit trebuie să fie după data de început');
+        return;
+      }
+      
       this.$emit('submit', { ...this.formData })
       this.closeModal()
     },
@@ -96,8 +123,7 @@ export default {
         customerName: '',
         phone: '',
         startDate: '',
-        endDate: '',
-        price: 0
+        endDate: ''
       }
     }
   }

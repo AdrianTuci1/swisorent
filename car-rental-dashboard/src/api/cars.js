@@ -2,7 +2,7 @@ const API_BASE_URL = import.meta.env.VITE_RENTAL_API;
 
 class CarsApiService {
   constructor() {
-    this.baseURL = `${API_BASE_URL}/cars`;
+    this.baseURL = `${API_BASE_URL}/api/cars`;
   }
 
   // Generic request method

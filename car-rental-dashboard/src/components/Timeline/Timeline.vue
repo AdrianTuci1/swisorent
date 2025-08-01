@@ -61,15 +61,26 @@
                 :class="styles.timelineCell"
                 @click="handleCellClick(car.registrationNumber, date)"
               >
+                <!-- Render continuous reservations -->
                 <div 
                   v-for="reservation in getReservationsForCarAndDate(car.registrationNumber, date)"
                   :key="reservation.id"
-                  :class="styles.reservationItem"
-                  :style="{ backgroundColor: reservation.color }"
-                  @click.stop="deleteReservation(reservation.id)"
+                  :class="[styles.reservationItem, {
+                    [styles.reservationStart]: isReservationStart(car.registrationNumber, date, reservation),
+                    [styles.reservationMiddle]: isReservationMiddle(car.registrationNumber, date, reservation),
+                    [styles.reservationEnd]: isReservationEnd(car.registrationNumber, date, reservation),
+                    [styles.reservationSingle]: isReservationSingle(car.registrationNumber, date, reservation)
+                  }]"
+                  :style="{ 
+                    backgroundColor: reservation.color,
+                    width: getReservationWidth(car.registrationNumber, date, reservation)
+                  }"
+                  @click="handleReservationClick($event, reservation.id)"
                   :title="`${reservation.customerName} - ${reservation.price} RON`"
                 >
-                  {{ reservation.customerName }}
+                  <span v-if="isReservationStart(car.registrationNumber, date, reservation) || isReservationSingle(car.registrationNumber, date, reservation)">
+                    {{ reservation.customerName }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -193,12 +204,48 @@ export default {
       })
     },
     
+    isReservationStart(carRegistration, date, reservation) {
+      return reservation.startDate === date
+    },
+    
+    isReservationEnd(carRegistration, date, reservation) {
+      return reservation.endDate === date
+    },
+    
+    isReservationMiddle(carRegistration, date, reservation) {
+      return reservation.startDate < date && reservation.endDate > date
+    },
+    
+    isReservationSingle(carRegistration, date, reservation) {
+      return reservation.startDate === reservation.endDate
+    },
+    
+
+    
+    getReservationWidth(carRegistration, date, reservation) {
+      if (this.isReservationSingle(carRegistration, date, reservation)) {
+        return '100%'
+      }
+      
+      // For all multi-day reservations, show them in each cell
+      return '100%'
+    },
+    
     handleCellClick(carRegistration, date) {
       this.$emit('cell-click', { carRegistration, date })
     },
     
     deleteReservation(id) {
       this.$emit('delete-reservation', id)
+    },
+    
+
+    
+    handleReservationClick(event, reservationId) {
+      // Simple click handler - if we're not dragging, delete the reservation
+      if (!this.isDragging) {
+        this.deleteReservation(reservationId)
+      }
     },
     
     showAddModal() {

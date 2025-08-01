@@ -90,6 +90,27 @@ export default {
     },
     
     submitForm() {
+      // Validate form data
+      if (!this.formData.registrationNumber.trim()) {
+        alert('Te rog introdu numărul de înmatriculare');
+        return;
+      }
+      
+      if (!this.formData.model.trim()) {
+        alert('Te rog introdu modelul mașinii');
+        return;
+      }
+      
+      if (!this.formData.color.trim()) {
+        alert('Te rog introdu culoarea mașinii');
+        return;
+      }
+      
+      if (!this.formData.price || this.formData.price <= 0) {
+        alert('Te rog introdu un preț valid');
+        return;
+      }
+      
       this.$emit('submit', { ...this.formData })
       this.closeModal()
     },

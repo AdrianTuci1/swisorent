@@ -30,8 +30,7 @@ export class TimelineDrag {
     // Don't start drag on interactive elements
     if (e.target.closest('button') || 
         e.target.closest('input') || 
-        e.target.closest('select') ||
-        e.target.closest(`.${this.options.cssClasses.reservationItem}`)) {
+        e.target.closest('select')) {
       return
     }
     

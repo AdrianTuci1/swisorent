@@ -90,6 +90,7 @@
   max-height: 600px;
   box-sizing: border-box;
   touch-action: none;
+  pointer-events: auto;
 }
 
 .timelineTableContainer:active {
@@ -223,28 +224,6 @@
   margin-top: 0.25rem;
 }
 
-.timelineCell {
-  min-width: 100px;
-  width: 100px;
-  flex-shrink: 0;
-  padding: 0.5rem;
-  border-right: 1px solid #e1e5e9;
-  cursor: pointer;
-  position: relative;
-  min-height: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-.timelineCell:hover {
-  background-color: #e3f2fd;
-}
-
 .reservationItem {
   padding: 0.5rem;
   border-radius: 4px;
@@ -255,11 +234,83 @@
   transition: all 0.2s;
   text-align: center;
   word-break: break-word;
+  height: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  z-index: 1;
+  border: none;
+  overflow: hidden;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.timelineTableContainer.dragging .reservationItem {
+  pointer-events: none;
 }
 
 .reservationItem:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 5;
+}
+
+.reservationStart {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: -1px;
+  z-index: 2;
+}
+
+.reservationMiddle {
+  border-radius: 0;
+  margin-right: -1px;
+  margin-left: -1px;
+  z-index: 2;
+}
+
+.reservationEnd {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+  z-index: 2;
+}
+
+.reservationSingle {
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.timelineCell {
+  min-width: 100px;
+  width: 100px;
+  flex-shrink: 0;
+  padding: 0;
+  border-right: 1px solid #e1e5e9;
+  cursor: pointer;
+  position: relative;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.timelineCell:hover {
+  background-color: #e3f2fd;
 }
 
 @media (max-width: 768px) {
