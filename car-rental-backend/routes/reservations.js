@@ -3,6 +3,14 @@ const router = express.Router();
 const Reservation = require('../models/Reservation');
 const Car = require('../models/Car');
 
+// Handle OPTIONS requests for all routes
+router.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.sendStatus(200);
+});
+
 // GET /api/reservations - Get all reservations
 router.get('/', async (req, res) => {
     try {
@@ -29,6 +37,25 @@ router.get('/date-range', async (req, res) => {
         res.json(reservations);
     } catch (error) {
         console.error('Error fetching reservations by date range:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// GET /api/reservations/available-cars - Get available cars for a date range
+router.get('/available-cars', async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+        
+        if (!startDate || !endDate) {
+            return res.status(400).json({ 
+                error: 'startDate and endDate are required' 
+            });
+        }
+
+        const availableCars = await Reservation.findAvailableCars(startDate, endDate);
+        res.json(availableCars);
+    } catch (error) {
+        console.error('Error fetching available cars:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -61,22 +88,22 @@ router.get('/:id', async (req, res) => {
 // POST /api/reservations - Create a new reservation
 router.post('/', async (req, res) => {
     try {
-        const { carId, customerName, phone, startDate, endDate } = req.body;
+        const { licensePlate, customerName, phone, startDate, endDate } = req.body;
         
-        if (!carId || !customerName || !phone || !startDate || !endDate) {
+        if (!licensePlate || !customerName || !phone || !startDate || !endDate) {
             return res.status(400).json({ 
-                error: 'carId, customerName, phone, startDate, and endDate are required' 
+                error: 'licensePlate, customerName, phone, startDate, and endDate are required' 
             });
         }
 
-        // Check if car exists
-        const car = await Car.findById(carId);
+        // Find car by license plate
+        const car = await Car.findByLicensePlate(licensePlate);
         if (!car) {
-            return res.status(404).json({ error: 'Car not found' });
+            return res.status(404).json({ error: 'Car not found with this license plate' });
         }
 
         // Check if car is available for the requested dates
-        const isAvailable = await Reservation.isCarAvailable(carId, startDate, endDate);
+        const isAvailable = await Reservation.isCarAvailable(car.id, startDate, endDate);
         if (!isAvailable) {
             return res.status(400).json({ 
                 error: 'Car is not available for the requested dates' 
@@ -84,7 +111,7 @@ router.post('/', async (req, res) => {
         }
 
         const reservationData = {
-            carId,
+            carId: car.id,
             licensePlate: car.licensePlate,
             model: car.model,
             customerName,
@@ -115,15 +142,41 @@ router.put('/:id', async (req, res) => {
         if (req.body.startDate !== undefined) updateData.startDate = req.body.startDate;
         if (req.body.endDate !== undefined) updateData.endDate = req.body.endDate;
 
-        // If dates are being updated, check availability
-        if (req.body.startDate || req.body.endDate) {
+        // Handle car change (licensePlate)
+        if (req.body.licensePlate && req.body.licensePlate !== reservation.licensePlate) {
+            // Find the new car
+            const newCar = await Car.findByLicensePlate(req.body.licensePlate);
+            if (!newCar) {
+                return res.status(404).json({ error: 'Car not found with this license plate' });
+            }
+
+            // Check if the new car is available for the requested dates
+            const newStartDate = req.body.startDate || reservation.startDate;
+            const newEndDate = req.body.endDate || reservation.endDate;
+            
+            const isNewCarAvailable = await Reservation.isCarAvailable(newCar.id, newStartDate, newEndDate, req.params.id);
+            if (!isNewCarAvailable) {
+                return res.status(400).json({ 
+                    error: 'New car is not available for the requested dates' 
+                });
+            }
+
+            // Update car-related fields
+            updateData.carId = newCar.id;
+            updateData.licensePlate = newCar.licensePlate;
+            updateData.model = newCar.model;
+        }
+
+        // If dates are being updated (without car change), check availability for current car
+        if ((req.body.startDate || req.body.endDate) && !req.body.licensePlate) {
             const newStartDate = req.body.startDate || reservation.startDate;
             const newEndDate = req.body.endDate || reservation.endDate;
             
             const isAvailable = await Reservation.isCarAvailable(
                 reservation.carId, 
                 newStartDate, 
-                newEndDate
+                newEndDate,
+                req.params.id
             );
             
             if (!isAvailable) {

@@ -75,7 +75,7 @@
                     backgroundColor: reservation.color,
                     width: getReservationWidth(car.registrationNumber, date, reservation)
                   }"
-                  @click="handleReservationClick($event, reservation.id)"
+                  @click="handleReservationClick($event, reservation)"
                   :title="`${reservation.customerName} - ${reservation.price} RON`"
                 >
                   <span v-if="isReservationStart(car.registrationNumber, date, reservation) || isReservationSingle(car.registrationNumber, date, reservation)">
@@ -88,15 +88,29 @@
         </div>
       </div>
     </div>
+    
+    <!-- Reservation Drawer -->
+    <ReservationDrawer
+      :show="showDrawer"
+      :reservation="selectedReservation"
+      :cars="cars"
+      @close="closeDrawer"
+      @update="updateReservation"
+      @delete="deleteReservation"
+    />
   </div>
 </template>
 
 <script>
 import styles from './Timeline.module.css'
 import { TimelineDrag } from '../../utils/timelineDrag.js'
+import ReservationDrawer from '../Drawer/ReservationDrawer.vue'
 
 export default {
   name: 'Timeline',
+  components: {
+    ReservationDrawer
+  },
   props: {
     cars: {
       type: Array,
@@ -114,7 +128,9 @@ export default {
       endDate: '',
       isDragging: false,
       isScrollable: false,
-      timelineDrag: null
+      timelineDrag: null,
+      showDrawer: false,
+      selectedReservation: null
     }
   },
   computed: {
@@ -241,11 +257,23 @@ export default {
     
 
     
-    handleReservationClick(event, reservationId) {
-      // Simple click handler - if we're not dragging, delete the reservation
-      if (!this.isDragging) {
-        this.deleteReservation(reservationId)
-      }
+    handleReservationClick(event, reservation) {
+      // Stop event propagation to prevent cell click
+      event.stopPropagation()
+      
+      // Open drawer with reservation details
+      this.selectedReservation = reservation
+      this.showDrawer = true
+    },
+    
+    closeDrawer() {
+      this.showDrawer = false
+      this.selectedReservation = null
+    },
+    
+    updateReservation(reservationData) {
+      // Emit event to parent to handle updating
+      this.$emit('update-reservation', reservationData)
     },
     
     showAddModal() {

@@ -82,16 +82,43 @@ class Reservation {
     // Get reservations in date range
     static async findByDateRange(startDate, endDate) {
         const client = dbConfig.getDynamoClient();
+        
+        // Clean the date parameters by removing curly braces if present
+        const cleanStartDate = startDate.replace(/[{}]/g, '');
+        const cleanEndDate = endDate.replace(/[{}]/g, '');
+        
+        console.log('=== DEBUG: findByDateRange ===');
+        console.log('Original dates:', { startDate, endDate });
+        console.log('Cleaned dates:', { cleanStartDate, cleanEndDate });
+        
+        // First, get all reservations to see what we have
+        const allReservationsCommand = new ScanCommand({
+            TableName: process.env.DYNAMODB_TABLE_RESERVATIONS
+        });
+        const allResult = await client.send(allReservationsCommand);
+        console.log('All reservations in DB:', allResult.Items.map(item => ({ 
+            carId: item.carId, 
+            startDate: item.startDate, 
+            endDate: item.endDate 
+        })));
+        
         const command = new ScanCommand({
             TableName: process.env.DYNAMODB_TABLE_RESERVATIONS,
             FilterExpression: '(startDate <= :endDate AND endDate >= :startDate)',
             ExpressionAttributeValues: {
-                ':startDate': startDate,
-                ':endDate': endDate
+                ':startDate': cleanStartDate,
+                ':endDate': cleanEndDate
             }
         });
 
         const result = await client.send(command);
+        console.log('Filtered reservations:', result.Items.map(item => ({ 
+            carId: item.carId, 
+            startDate: item.startDate, 
+            endDate: item.endDate 
+        })));
+        console.log('=== END DEBUG: findByDateRange ===');
+        
         return result.Items.map(item => new Reservation(item));
     }
 
@@ -114,10 +141,49 @@ class Reservation {
         return result.Items.map(item => new Reservation(item));
     }
 
-    // Check if car is available in date range
-    static async isCarAvailable(carId, startDate, endDate) {
+    // Check if car is available in date range (optionally exclude a specific reservation)
+    static async isCarAvailable(carId, startDate, endDate, excludeReservationId = null) {
         const reservations = await Reservation.findByCarAndDateRange(carId, startDate, endDate);
-        return reservations.length === 0;
+        
+        // Filter out the reservation being updated if provided
+        const conflictingReservations = excludeReservationId 
+            ? reservations.filter(r => r.id !== excludeReservationId)
+            : reservations;
+            
+        console.log(`isCarAvailable for carId ${carId}: found ${conflictingReservations.length} conflicting reservations`);
+        if (conflictingReservations.length > 0) {
+            console.log('Conflicting reservations found:', conflictingReservations.map(r => ({ id: r.id, startDate: r.startDate, endDate: r.endDate })));
+        }
+        return conflictingReservations.length === 0;
+    }
+
+    // Get available cars for a date range (cars that don't have reservations in the period)
+    static async findAvailableCars(startDate, endDate) {
+        const client = dbConfig.getDynamoClient();
+        
+        // First, get all cars
+        const Car = require('./Car');
+        const allCars = await Car.findAll();
+        
+        console.log('=== DEBUG: findAvailableCars ===');
+        console.log('Date range:', { startDate, endDate });
+        console.log('All cars:', allCars.map(car => ({ id: car.id, model: car.model })));
+        
+        // Get all reservations in the date range
+        const reservationsInRange = await Reservation.findByDateRange(startDate, endDate);
+        console.log('Reservations in range:', reservationsInRange.map(r => ({ carId: r.carId, startDate: r.startDate, endDate: r.endDate })));
+        
+        // Create a set of car IDs that have reservations in the range
+        const reservedCarIds = new Set(reservationsInRange.map(reservation => reservation.carId));
+        console.log('Reserved car IDs:', Array.from(reservedCarIds));
+        
+        // Filter out cars that have reservations in the date range
+        const availableCars = allCars.filter(car => !reservedCarIds.has(car.id));
+        
+        console.log('Available cars:', availableCars.map(car => ({ id: car.id, model: car.model })));
+        console.log('=== END DEBUG ===');
+        
+        return availableCars;
     }
 
     // Update reservation

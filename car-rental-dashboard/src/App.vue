@@ -31,6 +31,7 @@
             :reservations="reservations"
             @show-add-modal="showReservationModal = true"
             @delete-reservation="deleteReservation"
+            @update-reservation="updateReservation"
             @cell-click="handleCellClick"
           />
           
@@ -150,15 +151,9 @@ export default {
     
     async addReservation(reservationData) {
       try {
-        // Find the car by registration number to get its ID
-        const selectedCar = this.cars.find(car => car.registrationNumber === reservationData.carRegistration);
-        if (!selectedCar) {
-          throw new Error('Selected car not found');
-        }
-
         // Map the data to match the API expectations
         const apiReservationData = {
-          carId: selectedCar.id,
+          licensePlate: reservationData.carRegistration,
           customerName: reservationData.customerName,
           phone: reservationData.phone || '', // Add default phone if not provided
           startDate: reservationData.startDate,
@@ -185,14 +180,45 @@ export default {
     },
     
     async deleteReservation(id) {
-      if (confirm('Ești sigur că vrei să ștergi această rezervare?')) {
-        try {
-          await reservationsApi.deleteReservation(id);
-          this.reservations = this.reservations.filter(r => r.id !== id);
-        } catch (error) {
-          console.error('Failed to delete reservation:', error);
-          alert('Failed to delete reservation. Please try again.');
+      try {
+        await reservationsApi.deleteReservation(id);
+        this.reservations = this.reservations.filter(r => r.id !== id);
+      } catch (error) {
+        console.error('Failed to delete reservation:', error);
+        alert('Failed to delete reservation. Please try again.');
+      }
+    },
+    
+    async updateReservation(reservationData) {
+      try {
+        // Map the data to match the API expectations
+        const apiReservationData = {
+          licensePlate: reservationData.carRegistration,
+          customerName: reservationData.customerName,
+          phone: reservationData.phone || '',
+          startDate: reservationData.startDate,
+          endDate: reservationData.endDate
+        };
+
+        const updatedReservation = await reservationsApi.updateReservation(reservationData.id, apiReservationData);
+        
+        // Update the reservation in the local state
+        const index = this.reservations.findIndex(r => r.id === reservationData.id);
+        if (index !== -1) {
+          this.reservations[index] = {
+            id: updatedReservation.id,
+            carId: updatedReservation.carId,
+            carRegistration: updatedReservation.licensePlate,
+            customerName: updatedReservation.customerName,
+            startDate: updatedReservation.startDate,
+            endDate: updatedReservation.endDate,
+            phone: updatedReservation.phone,
+            color: this.reservations[index].color // Keep the same color
+          };
         }
+      } catch (error) {
+        console.error('Failed to update reservation:', error);
+        alert('Failed to update reservation. Please try again.');
       }
     },
     

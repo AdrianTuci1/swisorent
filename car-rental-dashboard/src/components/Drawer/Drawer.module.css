@@ -1,0 +1,322 @@
+.drawerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: white;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  animation: slideIn 0.3s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e1e5e9;
+  background-color: #f8f9fa;
+}
+
+.drawerTitle {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.closeBtn:hover {
+  background-color: #e9ecef;
+}
+
+.drawerContent {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.reservationInfo {
+  margin-bottom: 2rem;
+}
+
+.infoSection {
+  margin-bottom: 1.5rem;
+}
+
+.infoSectionTitle {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.infoItem:last-child {
+  border-bottom: none;
+}
+
+.infoLabel {
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.infoValue {
+  color: #333;
+  font-weight: 500;
+  text-align: right;
+  max-width: 200px;
+  word-break: break-word;
+}
+
+.drawerActions {
+  padding: 1.5rem;
+  border-top: 1px solid #e1e5e9;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.actionBtn {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.editBtn {
+  background-color: #1976d2;
+  color: white;
+}
+
+.editBtn:hover {
+  background-color: #1565c0;
+}
+
+.deleteBtn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background-color: #c82333;
+}
+
+.cancelBtn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancelBtn:hover {
+  background-color: #5a6268;
+}
+
+.saveBtn {
+  background-color: #28a745;
+  color: white;
+}
+
+.saveBtn:hover {
+  background-color: #218838;
+}
+
+/* Edit Form Styles */
+.editForm {
+  margin-bottom: 1rem;
+}
+
+.formSection {
+  margin-bottom: 1.5rem;
+}
+
+.formSectionTitle {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.formInput,
+.formSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.formInput:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.formInput[type="date"] {
+  font-family: inherit;
+}
+
+.formInput[type="tel"] {
+  font-family: inherit;
+}
+
+.confirmationDialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  max-width: 400px;
+  width: 90%;
+}
+
+.confirmationTitle {
+  margin: 0 0 1rem 0;
+  color: #dc3545;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.confirmationMessage {
+  margin: 0 0 1.5rem 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.confirmationActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.confirmationBtn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.confirmDeleteBtn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.confirmDeleteBtn:hover {
+  background-color: #c82333;
+}
+
+.cancelDeleteBtn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancelDeleteBtn:hover {
+  background-color: #5a6268;
+}
+
+@media (max-width: 768px) {
+  .drawer {
+    width: 100%;
+  }
+  
+  .drawerActions {
+    flex-direction: column;
+  }
+  
+  .confirmationActions {
+    flex-direction: column;
+  }
+  
+  .confirmationBtn {
+    width: 100%;
+  }
+} 

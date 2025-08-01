@@ -59,7 +59,7 @@ class ReservationsApiService {
     return this.request('', {
       method: 'POST',
       body: JSON.stringify({
-        carId: reservationData.carId,
+        licensePlate: reservationData.licensePlate,
         customerName: reservationData.customerName,
         phone: reservationData.phone || '',
         startDate: reservationData.startDate,
@@ -73,9 +73,7 @@ class ReservationsApiService {
     return this.request(`/${id}`, {
       method: 'PUT',
       body: JSON.stringify({
-        carId: reservationData.carId,
         licensePlate: reservationData.licensePlate,
-        model: reservationData.model,
         customerName: reservationData.customerName,
         phone: reservationData.phone || '',
         startDate: reservationData.startDate,

@@ -62,15 +62,26 @@ class Car {
         return result.Items.map(item => new Car(item));
     }
 
+    // Get car by license plate
+    static async findByLicensePlate(licensePlate) {
+        const client = dbConfig.getDynamoClient();
+        const command = new ScanCommand({
+            TableName: process.env.DYNAMODB_TABLE_CARS,
+            FilterExpression: 'licensePlate = :licensePlate',
+            ExpressionAttributeValues: {
+                ':licensePlate': licensePlate
+            }
+        });
+
+        const result = await client.send(command);
+        return result.Items.length > 0 ? new Car(result.Items[0]) : null;
+    }
+
     // Get available cars for a date range
     static async findAvailable(startDate, endDate) {
         const client = dbConfig.getDynamoClient();
         const command = new ScanCommand({
-            TableName: process.env.DYNAMODB_TABLE_CARS,
-            FilterExpression: 'isActive = :isActive',
-            ExpressionAttributeValues: {
-                ':isActive': true
-            }
+            TableName: process.env.DYNAMODB_TABLE_CARS
         });
 
         const result = await client.send(command);
