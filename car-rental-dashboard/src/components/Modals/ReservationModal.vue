@@ -23,6 +23,11 @@
         </div>
         
         <div :class="styles.formGroup">
+          <label for="phone" :class="styles.formLabel">Telefon:</label>
+          <input type="tel" id="phone" v-model="formData.phone" required :class="styles.formInput">
+        </div>
+        
+        <div :class="styles.formGroup">
           <label for="startDateRes" :class="styles.formLabel">Data început:</label>
           <input type="date" id="startDateRes" v-model="formData.startDate" required :class="styles.formInput">
         </div>
@@ -67,6 +72,7 @@ export default {
       formData: {
         carRegistration: '',
         customerName: '',
+        phone: '',
         startDate: '',
         endDate: '',
         price: 0
@@ -88,6 +94,7 @@ export default {
       this.formData = {
         carRegistration: '',
         customerName: '',
+        phone: '',
         startDate: '',
         endDate: '',
         price: 0

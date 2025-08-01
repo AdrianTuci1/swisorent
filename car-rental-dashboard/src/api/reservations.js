@@ -60,8 +60,6 @@ class ReservationsApiService {
       method: 'POST',
       body: JSON.stringify({
         carId: reservationData.carId,
-        licensePlate: reservationData.licensePlate,
-        model: reservationData.model,
         customerName: reservationData.customerName,
         phone: reservationData.phone || '',
         startDate: reservationData.startDate,

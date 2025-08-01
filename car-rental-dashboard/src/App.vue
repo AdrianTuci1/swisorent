@@ -150,7 +150,22 @@ export default {
     
     async addReservation(reservationData) {
       try {
-        const newReservation = await reservationsApi.createReservation(reservationData);
+        // Find the car by registration number to get its ID
+        const selectedCar = this.cars.find(car => car.registrationNumber === reservationData.carRegistration);
+        if (!selectedCar) {
+          throw new Error('Selected car not found');
+        }
+
+        // Map the data to match the API expectations
+        const apiReservationData = {
+          carId: selectedCar.id,
+          customerName: reservationData.customerName,
+          phone: reservationData.phone || '', // Add default phone if not provided
+          startDate: reservationData.startDate,
+          endDate: reservationData.endDate
+        };
+
+        const newReservation = await reservationsApi.createReservation(apiReservationData);
         
         // Add the new reservation to the local state
         this.reservations.push({
